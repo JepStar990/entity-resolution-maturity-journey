@@ -1,0 +1,100 @@
+/* Entity Resolution Maturity Journey - Custom Styles */
+
+/* Phase badges */
+.phase-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #fff;
+    margin-right: 4px;
+}
+
+.phase-badge.bronze {
+    background-color: #cd7f32;
+}
+
+.phase-badge.silver {
+    background-color: #a8a8a8;
+    color: #333;
+}
+
+.phase-badge.gold {
+    background-color: #ffd700;
+    color: #333;
+}
+
+/* Mermaid diagram container */
+.mermaid {
+    max-width: 100%;
+    margin: 1.5em auto;
+    text-align: center;
+}
+
+/* Phase summary table */
+.md-typeset table:not([class]) {
+    font-size: 0.85rem;
+}
+
+.md-typeset table:not([class]) th {
+    background-color: var(--md-primary-fg-color);
+    color: var(--md-primary-bg-color);
+}
+
+/* Admonition styling */
+.md-typeset .admonition.tip,
+.md-typeset details.tip {
+    border-color: #00bfa5;
+}
+
+.md-typeset .admonition.warning,
+.md-typeset details.warning {
+    border-color: #ff9100;
+}
+
+.md-typeset .admonition.danger,
+.md-typeset details.danger {
+    border-color: #ff1744;
+}
+
+/* Code block annotations */
+.md-typeset .md-annotation__index {
+    font-family: var(--md-code-font-family);
+}
+
+/* Grid cards for persona selection */
+.md-typeset .grid.cards > :is(ul, ol) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    grid-gap: 0.8rem;
+}
+
+.md-typeset .grid.cards > :is(ul, ol) > li {
+    border: 0.05rem solid var(--md-default-fg-color--lightest);
+    border-radius: 0.2rem;
+    padding: 0.8rem;
+    transition: border-color 125ms;
+}
+
+.md-typeset .grid.cards > :is(ul, ol) > li:hover {
+    border-color: var(--md-accent-fg-color);
+}
+
+/* Navigation spacing */
+.md-nav__item--section {
+    margin-top: 0.6em;
+}
+
+/* Phase overview table striping */
+.md-typeset table.phase-table tbody tr:nth-child(-n+3) {
+    background-color: rgba(205, 127, 50, 0.08);
+}
+
+.md-typeset table.phase-table tbody tr:nth-child(n+4):nth-child(-n+8) {
+    background-color: rgba(168, 168, 168, 0.08);
+}
+
+.md-typeset table.phase-table tbody tr:nth-child(n+9) {
+    background-color: rgba(255, 215, 0, 0.08);
+}
