@@ -1,0 +1,20 @@
+flowchart LR
+    Silver["Silver Table\n(Quality Passed)"]
+
+    subgraph Rules["Standardization Rules Engine"]
+        direction TB
+        Case["Case Normalization\n'JOHN SMITH' → 'John Smith'"]
+        Whitespace["Whitespace Normalization\n'  John   Smith ' → 'John Smith'"]
+        Unicode["Unicode Normalization\nNFKC: ™ → TM, ½ → 1/2"]
+        Phone["Phone Normalization\n'0821234567' → '+27821234567'"]
+        Address["Address Standardization\n'St.' → 'Street'"]
+        Date["Date Normalization\n'01/02/26' → '2026-01-02'"]
+    end
+
+    Standardized["Silver Standardized\nTable"]
+
+    Silver --> Rules --> Standardized
+
+    style Silver fill:#a8a8a8,color:#fff
+    style Rules fill:#e8e8e8,color:#000
+    style Standardized fill:#a8a8a8,color:#fff,stroke:#808080

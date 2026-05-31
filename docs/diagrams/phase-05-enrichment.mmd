@@ -1,0 +1,29 @@
+flowchart LR
+    Standard["Silver Standardized\nTable"]
+
+    subgraph Ref["Reference Data Sources"]
+        Postal["Postal Code\nLookup"]
+        Industry["Industry\nClassification"]
+        Firmo["Firmographic\nData"]
+        Geo["Geocoding\nAPI"]
+    end
+
+    subgraph Enrich["Enrichment Engine"]
+        Join["Left Join on\nReference Keys"]
+        SCD["SCD Type 2\nHandling"]
+        Cache["API Response\nCache"]
+    end
+
+    Enriched["Enriched Silver\nTable\n+ city, province, country\n+ industry, sector\n+ lat, lon"]
+
+    Standard --> Join
+    Postal --> Join
+    Industry --> Join
+    Firmo --> Join
+    Geo --> Cache --> Join
+    Join --> SCD --> Enriched
+
+    style Standard fill:#a8a8a8,color:#fff
+    style Ref fill:#4a90d9,color:#fff
+    style Enrich fill:#e8e8e8,color:#000
+    style Enriched fill:#a8a8a8,color:#fff,stroke:#808080

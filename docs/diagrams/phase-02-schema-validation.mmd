@@ -1,0 +1,24 @@
+flowchart LR
+    Bronze["Bronze Table\n(Raw Data)"]
+
+    subgraph Validation["Schema Validation Engine"]
+        SchemaReg["Schema Registry\n(Expected Schema)"]
+        Compare["Schema Comparison"]
+        Check["Required Columns\nDatatype Check\nDate/Email Format"]
+    end
+
+    subgraph Results["Validation Results"]
+        Pass["Passed Records\n→ Validated Bronze"]
+        Fail["Failed Records\n→ Quarantine Table\n+ failure_reason"]
+    end
+
+    Bronze --> Compare
+    SchemaReg --> Compare
+    Compare --> Check
+    Check --> Pass
+    Check --> Fail
+
+    style Bronze fill:#cd7f32,color:#fff
+    style Validation fill:#e8e8e8,color:#000
+    style Pass fill:#2e7d32,color:#fff
+    style Fail fill:#c62828,color:#fff

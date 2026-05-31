@@ -1,0 +1,28 @@
+flowchart LR
+    subgraph Sources["Source Systems"]
+        CSV["CSV / TSV\nFiles"]
+        API["REST / GraphQL\nAPIs"]
+        DB["Relational\nDatabases"]
+        Stream["Event\nStreams"]
+    end
+
+    subgraph Raw["Raw Layer"]
+        Land["Landing Zone\n(Source Fidelity)"]
+        Meta["Metadata\nEnrichment"]
+    end
+
+    subgraph Bronze_Layer["Bronze Table"]
+        Bronze["bronze.customers\n+ load_timestamp\n+ source_system\n+ batch_id\n+ file_name"]
+    end
+
+    CSV -->|"spark.read.csv()"| Land
+    API -->|"requests → DataFrame"| Land
+    DB -->|"spark.read.jdbc()"| Land
+    Stream -->|"spark.readStream"| Land
+
+    Land --> Meta
+    Meta -->|"append mode"| Bronze_Layer
+
+    style Sources fill:#4a90d9,color:#fff
+    style Raw fill:#cd7f32,color:#fff
+    style Bronze_Layer fill:#cd7f32,color:#fff,stroke:#8b5a2b

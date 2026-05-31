@@ -1,0 +1,28 @@
+flowchart LR
+    Bronze["Validated Bronze\nTable"]
+
+    subgraph GE["Great Expectations Suite"]
+        Expectations["Expectation Suite"]
+        NullCheck["expect_column_values_to_not_be_null()"]
+        RangeCheck["expect_column_values_to_be_between()"]
+        UniqueCheck["expect_column_values_to_be_unique()"]
+        SetCheck["expect_column_values_to_be_in_set()"]
+    end
+
+    subgraph Results["Quality Results"]
+        Pass["Passed Records\n→ Silver Table"]
+        Metrics["Quality Metrics\n95% complete\n2% invalid\n3% duplicates"]
+        Alert["Alerts\n(Slack, PagerDuty)"]
+    end
+
+    Bronze --> Expectations
+    Expectations --> NullCheck & RangeCheck & UniqueCheck & SetCheck
+    NullCheck & RangeCheck & UniqueCheck & SetCheck --> Pass
+    NullCheck & RangeCheck & UniqueCheck & SetCheck --> Metrics
+    Metrics --> Alert
+
+    style Bronze fill:#cd7f32,color:#fff
+    style GE fill:#e8e8e8,color:#000
+    style Pass fill:#a8a8a8,color:#fff
+    style Metrics fill:#4a90d9,color:#fff
+    style Alert fill:#c62828,color:#fff
