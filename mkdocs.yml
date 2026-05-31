@@ -1,0 +1,110 @@
+site_name: Entity Resolution Maturity Journey
+site_description: >
+  A 15-phase documented maturity model for building entity resolution
+  and master data management pipelines with Python and PySpark.
+site_url: https://JepStar990.github.io/entity-resolution-maturity-journey/
+repo_url: https://github.com/JepStar990/entity-resolution-maturity-journey
+repo_name: JepStar990/entity-resolution-maturity-journey
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: deep orange
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: deep orange
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - navigation.tracking
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets:
+      base_path: docs/
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - footnotes
+  - toc:
+      permalink: true
+      permalink_title: Anchor link to this section
+  - attr_list
+  - md_in_html
+  - def_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+plugins:
+  - search
+  - minify_html
+  - redirects:
+      redirect_maps:
+        'phases/phase-01.md': 'phases/phase-01-basic-data-ingestion.md'
+  - git-revision-date-localized:
+      enable_creation_date: true
+      type: date
+  - glightbox
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Architecture: architecture.md
+  - Phases:
+      - Overview: phases/overview.md
+      - Phase 1 - Basic Data Ingestion: phases/phase-01-basic-data-ingestion.md
+      - Phase 2 - Schema Validation: phases/phase-02-schema-validation.md
+      - Phase 3 - Data Quality Rules: phases/phase-03-data-quality-rules.md
+      - Phase 4 - Standardization: phases/phase-04-standardization.md
+      - Phase 5 - Data Enrichment: phases/phase-05-data-enrichment.md
+      - Phase 6 - Exact Deduplication: phases/phase-06-exact-deduplication.md
+      - Phase 7 - Fuzzy Matching: phases/phase-07-fuzzy-matching.md
+      - Phase 8 - Record Blocking: phases/phase-08-record-blocking.md
+      - Phase 9 - Feature Engineering: phases/phase-09-feature-engineering.md
+      - Phase 10 - Probabilistic ML Matching: phases/phase-10-probabilistic-matching.md
+      - Phase 11 - LLM Semantic Matching: phases/phase-11-semantic-matching-llm.md
+      - Phase 12 - Embedding-Based Matching: phases/phase-12-embedding-matching.md
+      - Phase 13 - Golden Record Creation: phases/phase-13-golden-record-creation.md
+      - Phase 14 - Data Stewardship: phases/phase-14-data-stewardship.md
+      - Phase 15 - MDM Distribution: phases/phase-15-master-data-management.md
+  - Reference:
+      - Glossary: reference/glossary.md
+      - Technology Stack: reference/tech-stack.md
+      - Medallion Architecture: reference/medallion-architecture.md
+      - Bibliography: reference/bibliography.md
+      - Decision Log: reference/decision-log.md
+  - Examples:
+      - Overview: examples/README.md
+
+extra_css:
+  - stylesheets/extra.css
+
+copyright: >
+  Copyright &copy; 2026 JepStar990
