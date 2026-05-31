@@ -1,0 +1,25 @@
+flowchart LR
+    Features["Feature Vectors\n(from Phase 9)"]
+
+    subgraph Training["Model Training"]
+        direction TB
+        Split["Train/Test\nSplit"]
+        Train["Train Models"]
+        LR["Logistic\nRegression"]
+        RF["Random\nForest"]
+        XGB["XGBoost"]
+        Eval["Model Evaluation\nPrecision, Recall, F1, ROC-AUC"]
+        Best["Best Model →\nMLflow Registry"]
+    end
+
+    Inference["Inference Pipeline\n→ Match Probability"]
+    Results["Match Decisions\n≥ 95%: Auto-Merge\n80-95%: Review\n< 80%: Reject"]
+
+    Features --> Split --> Train
+    Train --> LR & RF & XGB
+    LR & RF & XGB --> Eval --> Best --> Inference --> Results
+
+    style Features fill:#ffd700,color:#000
+    style Training fill:#e8e8e8,color:#000
+    style Inference fill:#ffd700,color:#000
+    style Results fill:#4a90d9,color:#fff

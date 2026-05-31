@@ -1,0 +1,22 @@
+flowchart LR
+    Pairs["Candidate Pairs\n(from Blocking)"]
+
+    subgraph Features["Feature Extraction"]
+        direction TB
+        Numeric["Numeric Similarity\n(name_jw, addr_jac, email_lev)"]
+        Categ["Categorical Agreement\n(industry_match, city_match)"]
+        Date["Date Proximity\n(signup_days_apart, last_active_diff)"]
+        Geo["Geographic Distance\n(haversine_km)"]
+        Phonetic["Phonetic Match\n(soundex_name_match)"]
+    end
+
+    Assembly["Feature Vector Assembly\n[0.92, 0.98, 0.60, 1.00, 0.85, ...]"]
+    Store["Feature Store\n(Training + Inference)"]
+
+    Pairs --> Numeric & Categ & Date & Geo & Phonetic
+    Numeric & Categ & Date & Geo & Phonetic --> Assembly --> Store
+
+    style Pairs fill:#4a90d9,color:#fff
+    style Features fill:#e8e8e8,color:#000
+    style Assembly fill:#ffd700,color:#000
+    style Store fill:#ffd700,color:#000,stroke:#b8960c

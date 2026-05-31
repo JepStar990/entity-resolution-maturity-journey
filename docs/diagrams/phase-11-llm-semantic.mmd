@@ -1,0 +1,20 @@
+flowchart LR
+    LowPairs["Low-Confidence Pairs\n(40-60% from ML)"]
+
+    subgraph LLM["LLM Semantic Evaluation"]
+        direction TB
+        Prompt["Prompt Construction\nSystem + Entity A + Entity B"]
+        LLMCall["LLM API Call\n(GPT-4, Claude, Llama)"]
+        Parse["Response Parsing\nmatch/no-match + reasoning"]
+        Score["Semantic Score\n0.0 - 1.0"]
+    end
+
+    Merge["Merge with ML\nPredictions"]
+    High["High Confidence\n→ Golden Record"]
+
+    LowPairs --> Prompt --> LLMCall --> Parse --> Score --> Merge --> High
+
+    style LowPairs fill:#f9a825,color:#000
+    style LLM fill:#e8e8e8,color:#000
+    style Merge fill:#ffd700,color:#000
+    style High fill:#2e7d32,color:#fff

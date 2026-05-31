@@ -1,0 +1,19 @@
+flowchart LR
+    Records["Golden Record\nCandidates"]
+
+    subgraph Embed["Embedding Pipeline"]
+        direction TB
+        Encode["Embedding Model\n(sentence-transformers,\nOpenAI, BGE, E5)"]
+        Vector["Vector Generation\n384-1536 dimensions"]
+        Index["Vector Database\n(FAISS, Milvus, Pinecone)"]
+    end
+
+    Search["ANN Similarity Search\nCosine Similarity"]
+    Matches["Vector Matches\n'Acme SA' ≈ 'Acme South Africa Pty Ltd'\nsimilarity: 0.97"]
+
+    Records --> Encode --> Vector --> Index --> Search --> Matches
+
+    style Records fill:#ffd700,color:#000
+    style Embed fill:#e8e8e8,color:#000
+    style Search fill:#ffd700,color:#000
+    style Matches fill:#4a90d9,color:#fff
