@@ -1,0 +1,29 @@
+flowchart LR
+    Deduped["Deduplicated Silver\nTable"]
+
+    subgraph Fuzzy["Fuzzy Matching Engine"]
+        direction TB
+        Pairs["Candidate Pair\nGeneration"]
+        Lev["Levenshtein\nDistance"]
+        JW["Jaro-Winkler\nSimilarity"]
+        Soundex["Soundex\nPhonetic Match"]
+        Addr["Address\nSimilarity"]
+        Combine["Combine Scores\n→ Similarity Vector"]
+    end
+
+    subgraph Results["Match Results"]
+        High["High Confidence\n(≥ 95%)\n→ Auto-Merge"]
+        Med["Medium Confidence\n(80-95%)\n→ Review Queue"]
+        Low["Low Confidence\n(< 80%)\n→ Keep Separate"]
+    end
+
+    Deduped --> Pairs
+    Pairs --> Lev & JW & Soundex & Addr
+    Lev & JW & Soundex & Addr --> Combine
+    Combine --> High & Med & Low
+
+    style Deduped fill:#a8a8a8,color:#fff
+    style Fuzzy fill:#e8e8e8,color:#000
+    style High fill:#2e7d32,color:#fff
+    style Med fill:#f9a825,color:#000
+    style Low fill:#c62828,color:#fff

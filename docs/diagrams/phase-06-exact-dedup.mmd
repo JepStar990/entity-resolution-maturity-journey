@@ -1,0 +1,20 @@
+flowchart LR
+    Enriched["Enriched Silver\nTable"]
+
+    subgraph Dedup["Exact Deduplication Engine"]
+        direction TB
+        Key["Composite Key\nConstruction"]
+        Rank["ROW_NUMBER() OVER\n(PARTITION BY key\nORDER BY quality_score DESC)"]
+        Filter["Keep rank = 1"]
+    end
+
+    Deduped["Deduplicated Silver\nTable"]
+    Audit["Duplicate Audit Log\n+ dedup_batch_id\n+ survivor_row_id\n+ removed_row_id"]
+
+    Enriched --> Key --> Rank --> Filter --> Deduped
+    Filter -.->|"rank > 1"| Audit
+
+    style Enriched fill:#a8a8a8,color:#fff
+    style Dedup fill:#e8e8e8,color:#000
+    style Deduped fill:#a8a8a8,color:#fff,stroke:#808080
+    style Audit fill:#6a1b9a,color:#fff

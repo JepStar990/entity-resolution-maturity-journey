@@ -1,0 +1,29 @@
+flowchart LR
+    Deduped["Deduplicated Silver\nTable"]
+
+    subgraph Blocking["Blocking Strategies"]
+        direction TB
+        Postal["Block by\nPostal Code"]
+        FirstLetter["Block by\nFirst Letter"]
+        Sorted["Sorted\nNeighborhood"]
+        Canopy["Canopy\nClustering"]
+    end
+
+    subgraph Compare["Within-Block Comparison"]
+        direction TB
+        B1["Block 1\n(1,000 records)"]
+        B2["Block 2\n(1,000 records)"]
+        B3["Block N\n(1,000 records)"]
+        Fuzzy["Fuzzy Matching\n(per block)"]
+    end
+
+    Candidates["Match Candidates\n(Reduced from O(n^2)\nto O(n * b))"]
+
+    Deduped --> Postal & FirstLetter & Sorted & Canopy
+    Postal & FirstLetter & Sorted & Canopy --> B1 & B2 & B3
+    B1 & B2 & B3 --> Fuzzy --> Candidates
+
+    style Deduped fill:#a8a8a8,color:#fff
+    style Blocking fill:#e8e8e8,color:#000
+    style Compare fill:#e8e8e8,color:#000
+    style Candidates fill:#4a90d9,color:#fff
