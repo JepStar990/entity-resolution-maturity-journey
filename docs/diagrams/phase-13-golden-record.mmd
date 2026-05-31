@@ -1,0 +1,24 @@
+flowchart LR
+    Matched["Matched Records\n(Entity Clusters)"]
+
+    subgraph Survivorship["Survivorship Rule Engine"]
+        direction TB
+        Rules["Survivorship Rules"]
+        MostRecent["Most Recent\nValue Wins"]
+        MostFrequent["Most Frequent\nValue Wins"]
+        Trusted["Most Trusted\nSource Wins"]
+        Conflict["Conflict\nResolution"]
+    end
+
+    Golden["Golden Record\nJohn Smith\nPhone (from CRM)\nAddress (from ERP)\nEmail (from Support)"]
+    History["Version History\nTable\n(All source values preserved)"]
+
+    Matched --> Rules
+    Rules --> MostRecent & MostFrequent & Trusted
+    MostRecent & MostFrequent & Trusted --> Conflict --> Golden
+    Conflict -.->|"Previous values"| History
+
+    style Matched fill:#ffd700,color:#000
+    style Survivorship fill:#e8e8e8,color:#000
+    style Golden fill:#ffd700,color:#000,stroke:#b8960c
+    style History fill:#6a1b9a,color:#fff

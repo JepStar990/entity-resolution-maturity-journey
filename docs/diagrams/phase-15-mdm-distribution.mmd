@@ -1,0 +1,28 @@
+flowchart LR
+    Golden["Golden Records"]
+
+    subgraph MDM["MDM Hub"]
+        direction TB
+        Catalog["Data Catalog\n& Lineage"]
+        Contracts["Data Contracts\n& SLAs"]
+        Sync["Sync Engine\n(CDC, Bulk, API)"]
+    end
+
+    subgraph Consumers["Enterprise Consumers"]
+        direction TB
+        CRM["CRM Systems"]
+        ERP["ERP Systems"]
+        Analytics["Analytics\nDashboards"]
+        AI["AI/ML\nApplications"]
+        DW["Data\nWarehouse"]
+    end
+
+    Monitor["SLA Monitoring\n& Alerts"]
+
+    Golden --> MDM --> Consumers
+    MDM -.-> Monitor
+
+    style Golden fill:#ffd700,color:#000
+    style MDM fill:#e8e8e8,color:#000
+    style Consumers fill:#4a90d9,color:#fff
+    style Monitor fill:#2e7d32,color:#fff

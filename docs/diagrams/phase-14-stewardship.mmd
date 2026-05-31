@@ -1,0 +1,34 @@
+flowchart LR
+    Uncertain["Uncertain Matches\n(80-95% confidence)"]
+
+    subgraph Queue["Review Queue"]
+        direction TB
+        Prioritize["Priority\nScoring"]
+        Assign["Assign to\nSteward"]
+    end
+
+    subgraph UI["Steward UI"]
+        direction TB
+        Compare["Side-by-Side\nComparison"]
+        Actions["Decisions\nApprove / Merge\nSplit / Reject"]
+    end
+
+    subgraph Feedback["Feedback Loop"]
+        direction TB
+        Labels["New Training\nLabels"]
+        Retrain["Model\nRetraining"]
+        Rules["Survivorship\nRule Updates"]
+    end
+
+    Audit["Stewardship\nAudit Log"]
+
+    Uncertain --> Queue --> UI --> Feedback
+    UI --> Audit
+    Feedback -.->|"Labels"| Retrain
+    Feedback -.->|"Patterns"| Rules
+
+    style Uncertain fill:#f9a825,color:#000
+    style Queue fill:#e8e8e8,color:#000
+    style UI fill:#4a90d9,color:#fff
+    style Feedback fill:#2e7d32,color:#fff
+    style Audit fill:#6a1b9a,color:#fff
