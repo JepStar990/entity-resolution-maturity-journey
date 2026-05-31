@@ -1,0 +1,29 @@
+flowchart TD
+    subgraph Bronze["BRONZE LAYER - Raw, Immutable, Append-Only"]
+        direction LR
+        B1["Phase 1\nData Ingestion"] --> B2["Phase 2\nSchema Validation"] --> B3["Phase 3\nData Quality"]
+    end
+
+    subgraph Silver["SILVER LAYER - Cleansed, Validated, Deduplicated"]
+        direction LR
+        S1["Phase 4\nStandardization"] --> S2["Phase 5\nEnrichment"]
+        S2 --> S3["Phase 6\nExact Dedup"]
+        S3 --> S4["Phase 7\nFuzzy Matching"]
+        S4 --> S5["Phase 8\nBlocking"]
+    end
+
+    subgraph Gold["GOLD LAYER - Business-Ready, Governed, Trusted"]
+        direction LR
+        G1["Phase 9\nFeatures"] --> G2["Phase 10\nML Matching"]
+        G2 --> G3["Phase 11\nLLM Semantic"]
+        G3 --> G4["Phase 12\nEmbeddings"]
+        G4 --> G5["Phase 13\nGolden Record"]
+        G5 --> G6["Phase 14\nStewardship"]
+        G6 --> G7["Phase 15\nMDM"]
+    end
+
+    Bronze --> Silver --> Gold
+
+    style Bronze fill:#cd7f32,color:#fff,stroke:#8b5a2b
+    style Silver fill:#a8a8a8,color:#fff,stroke:#808080
+    style Gold fill:#ffd700,color:#000,stroke:#b8960c

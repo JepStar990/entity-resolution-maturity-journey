@@ -1,0 +1,44 @@
+flowchart TD
+    Sources["Source Systems\n(CSV, APIs, Databases, Files)"]
+
+    subgraph Bronze["BRONZE LAYER - Raw & Validated"]
+        direction TB
+        P1["Phase 1: Basic Data Ingestion\nRaw ingestion, metadata enrichment,\nschema-on-read"]
+        P2["Phase 2: Schema Validation\nRequired columns, datatypes,\ndate/email format checks"]
+        P3["Phase 3: Data Quality Rules\nNull checks, range validation,\nuniqueness, business rules"]
+    end
+
+    subgraph Silver["SILVER LAYER - Clean & Standardized"]
+        direction TB
+        P4["Phase 4: Standardization\nNames, phones, addresses,\ndates, units"]
+        P5["Phase 5: Data Enrichment\nPostal codes, industry lookups,\nreference data joins"]
+        P6["Phase 6: Exact Deduplication\nDISTINCT, ROW_NUMBER,\ncomposite key matching"]
+        P7["Phase 7: Fuzzy Matching\nLevenshtein, Jaro-Winkler,\nSoundex, address similarity"]
+        P8["Phase 8: Record Blocking\nSorted neighborhood, canopy\nclustering, transitive closure"]
+    end
+
+    subgraph Gold["GOLD LAYER - Matched & Trusted"]
+        direction TB
+        P9["Phase 9: Feature Engineering\nSimilarity vectors, feature\nassembly for ML"]
+        P10["Phase 10: Probabilistic Matching\nLogistic Regression, XGBoost,\nmatch probability scoring"]
+        P11["Phase 11: LLM Semantic Matching\nContext understanding,\nabbreviation resolution"]
+        P12["Phase 12: Embedding Matching\nVector databases, cosine\nsimilarity, ANN search"]
+        P13["Phase 13: Golden Record Creation\nSurvivorship rules, conflict\nresolution, master profile"]
+        P14["Phase 14: Data Stewardship\nHuman review queue, feedback\nloop for model retraining"]
+        P15["Phase 15: MDM Distribution\nREST API, event streams,\nenterprise consumption"]
+    end
+
+    Consumers["Analytics / AI / Applications"]
+
+    Sources --> P1
+    P1 --> P2 --> P3 --> P4 --> P5 --> P6 --> P7 --> P8 --> P9 --> P10
+    P10 --> P11 --> P12 --> P13 --> P14 --> P15 --> Consumers
+
+    P14 -.->|"Training feedback"| P10
+    P14 -.->|"Rule refinement"| P13
+
+    style Bronze fill:#cd7f32,color:#fff,stroke:#8b5a2b
+    style Silver fill:#a8a8a8,color:#fff,stroke:#808080
+    style Gold fill:#ffd700,color:#000,stroke:#b8960c
+    style Sources fill:#4a90d9,color:#fff
+    style Consumers fill:#4a90d9,color:#fff

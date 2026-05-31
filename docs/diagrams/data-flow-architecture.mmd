@@ -1,0 +1,52 @@
+flowchart LR
+    subgraph Sources["Source Systems"]
+        CSV["CSV Files"]
+        API["REST APIs"]
+        DB["Databases"]
+        Stream["Event Streams"]
+    end
+
+    subgraph Bronze["Bronze Layer"]
+        Raw["Raw Data\n(Schema-on-Read)"]
+        Validated["Validated Data\n(Schema Enforced)"]
+    end
+
+    subgraph Silver["Silver Layer"]
+        Clean["Cleansed Data\n(Quality Passed)"]
+        Standard["Standardized Data\n(Consistent Format)"]
+        Enriched["Enriched Data\n(Reference Augmented)"]
+        Deduped["Deduplicated Data\n(Exact + Fuzzy)"]
+    end
+
+    subgraph Gold["Gold Layer"]
+        Features["Feature Vectors\n(ML Ready)"]
+        Matched["Matched Entities\n(ML + LLM + Embeddings)"]
+        Golden["Golden Records\n(Survivorship Applied)"]
+    end
+
+    subgraph Consumption["Consumption Layer"]
+        Steward["Data Steward UI\n(Human Review)"]
+        MDM["MDM Hub\n(REST / GraphQL / Events)"]
+        Analytics["Analytics\n& AI Apps"]
+    end
+
+    CSV --> Raw
+    API --> Raw
+    DB --> Raw
+    Stream --> Raw
+    Raw --> Validated --> Clean --> Standard --> Enriched --> Deduped
+    Deduped --> Features --> Matched --> Golden
+    Golden --> Steward --> MDM --> Analytics
+    Golden --> Analytics
+    Steward -.->|"Feedback"| Matched
+
+    Delta["Delta Lake Storage"] -.-> Bronze
+    Delta -.-> Silver
+    Delta -.-> Gold
+
+    style Bronze fill:#cd7f32,color:#fff
+    style Silver fill:#a8a8a8,color:#fff
+    style Gold fill:#ffd700,color:#000
+    style Sources fill:#4a90d9,color:#fff
+    style Consumption fill:#2e7d32,color:#fff
+    style Delta fill:#6a1b9a,color:#fff
