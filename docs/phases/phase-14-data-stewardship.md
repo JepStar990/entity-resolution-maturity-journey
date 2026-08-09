@@ -183,9 +183,9 @@ def trigger_retraining_check():
 |------------|------|-----------|
 | **Custom Steward UI** | Review interface | Side-by-side comparison, batch actions |
 | **Delta Lake** | Audit log | Immutable, time-travelable decision history |
-| **MLflow** | Model retraining | Trigger retraining when enough new labels accumulate |
+| **MLflow** (built into Fabric) | Model retraining | Trigger retraining when enough new labels accumulate |
 | **Apache Kafka** | Review queue | Durable, ordered task distribution to stewards |
-| **Apache Airflow** | Orchestration | Scheduled retraining checks, SLA monitoring |
+| **Fabric Data Pipelines** | Orchestration | Scheduled retraining checks, SLA monitoring |
 
 ---
 

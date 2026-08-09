@@ -77,6 +77,15 @@ A curated collection of foundational papers, books, and articles that inform the
 - **Databricks. (2021).** "The Medallion Architecture." [databricks.com/glossary/medallion-architecture](https://www.databricks.com/glossary/medallion-architecture)
   - Introduces and explains the Bronze → Silver → Gold data organization pattern used throughout this maturity model.
 
+- **Microsoft. (2024).** "Microsoft Fabric Lakehouse Architecture." [learn.microsoft.com/en-us/fabric/data-engineering/lakehouse-architecture](https://learn.microsoft.com/en-us/fabric/data-engineering/lakehouse-architecture)
+  - Microsoft Fabric's native implementation of the medallion architecture with OneLake as the unified storage layer.
+
+- **Microsoft. (2024).** "What is Microsoft Fabric?" [learn.microsoft.com/en-us/fabric/get-started/microsoft-fabric-overview](https://learn.microsoft.com/en-us/fabric/get-started/microsoft-fabric-overview)
+  - Overview of Microsoft Fabric's SaaS analytics platform, covering Lakehouse, Data Factory, Data Engineering, and Data Science workloads.
+
+- **Microsoft. (2024).** "Microsoft Fabric Decision Guide." [learn.microsoft.com/en-us/fabric/get-started/fabric-decision-guide](https://learn.microsoft.com/en-us/fabric/get-started/fabric-decision-guide)
+  - Decision guidance for choosing the right Fabric workload and architecture pattern for your use case.
+
 - **Armbrust, M., et al. (2020).** "Delta Lake: High-Performance ACID Table Storage over Cloud Object Stores." *VLDB*, 13(12), 3411–3424.
   - The Delta Lake paper. Covers the design, implementation, and performance characteristics of the storage layer recommended for all pipeline phases.
 
@@ -108,8 +117,9 @@ A curated collection of foundational papers, books, and articles that inform the
 
 1. Berson & Dubov (2011) — *Master Data Management and Data Governance*
 2. Databricks Medallion Architecture
-3. Delta Lake Paper
-4. Christen (2012) — *Data Matching* — Chapters 8–10 (clustering, evaluation, privacy)
+3. Microsoft Fabric Lakehouse Architecture
+4. Delta Lake Paper
+5. Christen (2012) — *Data Matching* — Chapters 8–10 (clustering, evaluation, privacy)
 
 ### For Researchers
 

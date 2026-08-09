@@ -26,7 +26,7 @@ This page describes the end-to-end architecture of the entity resolution and MDM
 
 ## Medallion Architecture
 
-The pipeline follows the **Bronze → Silver → Gold** medallion architecture pattern, popularized by Databricks and Delta Lake.
+The pipeline follows the **Bronze → Silver → Gold** medallion architecture pattern, implemented natively in Microsoft Fabric and popularized by Databricks.
 
 ### Bronze Layer (Phases 1–3)
 

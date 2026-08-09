@@ -117,10 +117,13 @@
 : The discipline of creating and maintaining a single, trusted view of critical business entities (customers, suppliers, products, locations) across the enterprise. Phase 15.
 
 **Medallion Architecture**
-: A data organization pattern (Bronze → Silver → Gold) where data quality and structure improve at each layer. Popularized by Databricks.
+: A data organization pattern (Bronze → Silver → Gold) where data quality and structure improve at each layer. Implemented by Databricks and Microsoft Fabric.
 
 **MLflow**
-: An open-source platform for managing the ML lifecycle, including experiment tracking, model registry, and deployment. Used in Phase 10.
+: An open-source platform for managing the ML lifecycle, including experiment tracking, model registry, and deployment. Natively supported in Microsoft Fabric. Used in Phase 10.
+
+**OneLake**
+: Microsoft Fabric's built-in SaaS data lake. A single, unified storage layer for all Fabric workloads — Lakehouses, Warehouses, and KQL Databases. Delta Lake tables stored in OneLake are automatically accessible across workspaces via shortcuts without data duplication.
 
 ## N
 

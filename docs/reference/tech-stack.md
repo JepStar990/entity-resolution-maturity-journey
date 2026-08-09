@@ -13,7 +13,7 @@ This reference details each technology in the entity resolution maturity pipelin
 | **Version** | 3.5+ |
 | **Role** | Distributed data processing engine |
 | **Phases** | 1–10, 13 |
-| **Why** | Unified API for batch and streaming; DataFrame API is expressive and optimized; MLlib provides distributed ML training; scales horizontally from laptop to 1000+ node clusters. |
+| **Why** | Unified API for batch and streaming; DataFrame API is expressive and optimized; MLlib provides distributed ML training; scales horizontally from laptop to 1000+ node clusters. Microsoft Fabric provides a managed Spark runtime (Fabric Runtime) with pre-installed libraries and OneLake integration. |
 
 **Alternatives**: Apache Beam (portable, but more complex), Dask (Python-native, smaller ecosystem), Polars (fast single-node, no distributed).
 
@@ -24,9 +24,9 @@ This reference details each technology in the entity resolution maturity pipelin
 | **Version** | 3.x |
 | **Role** | Storage layer with ACID transactions |
 | **Phases** | All |
-| **Why** | ACID transactions on data lake storage; time travel enables point-in-time queries and rollback; schema enforcement prevents data corruption; efficient upserts/merges for SCD and dedup. |
+| **Why** | ACID transactions on data lake storage; time travel enables point-in-time queries and rollback; schema enforcement prevents data corruption; efficient upserts/merges for SCD and dedup. In Microsoft Fabric, Delta Lake is the native table format stored on OneLake — tables are automatically available across workspaces via shortcuts. |
 
-**Alternatives**: Apache Iceberg (broader ecosystem, Hive/Trino/Flink support), Apache Hudi (better for streaming upserts). Delta Lake chosen for deepest Spark integration.
+**Alternatives**: Apache Iceberg (broader ecosystem, Hive/Trino/Flink support), Apache Hudi (better for streaming upserts). Delta Lake chosen for deepest Spark integration and native Fabric support.
 
 ---
 
@@ -96,7 +96,7 @@ This reference details each technology in the entity resolution maturity pipelin
 | **Version** | 2.x |
 | **Role** | ML lifecycle management |
 | **Phases** | 10, 14 |
-| **Why** | Experiment tracking, model versioning, model registry; Spark and scikit-learn integration; promotes models from staging to production with governance. |
+| **Why** | Experiment tracking, model versioning, model registry; Spark and scikit-learn integration; promotes models from staging to production with governance. Natively supported in Microsoft Fabric — no separate installation required; models registered in Fabric ML Model registry are managed alongside your Lakehouse data. |
 
 ---
 
@@ -179,7 +179,7 @@ This reference details each technology in the entity resolution maturity pipelin
 | **Phases** | 1, 10, 14, 15 |
 | **Why** | Python-native DAG definitions; rich scheduling (cron, sensors, dependencies); massive community and operator ecosystem. |
 
-**Alternative**: Dagster (modern, asset-based, better for data pipelines specifically).
+**Alternative**: Dagster (modern, asset-based, better for data pipelines specifically). Microsoft Fabric Data Pipelines (built-in scheduling and orchestration with Data Factory).
 
 ### Prometheus + Grafana
 

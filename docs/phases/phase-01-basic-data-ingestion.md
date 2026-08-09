@@ -200,8 +200,9 @@ Move to Phase 2 when:
 
 - [Delta Lake: Reliability for Data Lakes](https://delta.io/)
 - [Spark Structured Streaming Guide](https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html)
-- [The Medallion Architecture](https://www.databricks.com/glossary/medallion-architecture)
+- [The Medallion Architecture](https://www.databricks.com/glossary/medallion-architecture) — also see [Microsoft Fabric Lakehouse Architecture](https://learn.microsoft.com/en-us/fabric/data-engineering/lakehouse-architecture)
 - [Data Ingestion Patterns](https://martinfowler.com/articles/data-ingestion-patterns.html)
+- [Fabric Data Factory: Copy Data](https://learn.microsoft.com/en-us/fabric/data-factory/)
 
 ---
 

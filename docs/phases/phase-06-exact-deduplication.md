@@ -199,6 +199,7 @@ Move to Phase 7 when:
 
 - [Window Functions in PySpark](https://spark.apache.org/docs/latest/sql-ref-syntax-qry-select-window.html)
 - [Delta Lake ACID Transactions](https://delta.io/blog/2022-01-12-delta-lake-transactions/)
+- [Fabric Delta Lake: Table Maintenance](https://learn.microsoft.com/en-us/fabric/data-engineering/delta-lake-table-maintenance)
 - [SQL Antipatterns: Avoiding the Wrong Key](https://www.amazon.com/SQL-Antipatterns-Programming-Pragmatic-Programmers/dp/1934356557)
 
 ---

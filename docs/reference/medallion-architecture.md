@@ -6,7 +6,7 @@ A deep dive into the Bronze → Silver → Gold data organization pattern and ho
 
 ## Overview
 
-The medallion architecture, popularized by Databricks, organizes data into three progressive layers:
+The medallion architecture, implemented natively in Microsoft Fabric and popularized by Databricks, organizes data into three progressive layers:
 
 ```
 Source Systems → Bronze → Silver → Gold → Consumption

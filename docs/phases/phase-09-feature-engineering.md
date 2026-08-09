@@ -173,7 +173,7 @@ df_scaled = scaler_model.transform(df_features)
 | **PySpark ML VectorAssembler** | Feature assembly | Native Spark ML pipeline integration |
 | **PySpark ML StandardScaler** | Feature scaling | Required for distance-based models |
 | **Feature Store (Feast / Tecton)** | Feature management | Version, share, and serve features |
-| **MLflow** | Experiment tracking | Track which feature sets produced which results |
+| **MLflow** (built into Fabric) | Experiment tracking | Track which feature sets produced which results |
 
 ---
 

@@ -198,6 +198,7 @@ Move to Phase 3 when:
 
 - [Delta Lake Schema Enforcement](https://delta.io/blog/2022-03-23-delta-lake-schema-enforcement/)
 - [Schema Evolution in Data Lakes](https://www.databricks.com/blog/2020/02/04/schema-evolution-in-merge-operations.html)
+- [Fabric Lakehouse: Schema Validation](https://learn.microsoft.com/en-us/fabric/data-engineering/lakehouse-overview)
 - [Apache Avro Schema Registry](https://docs.confluent.io/platform/current/schema-registry/index.html)
 
 ---
