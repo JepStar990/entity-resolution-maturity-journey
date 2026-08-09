@@ -104,6 +104,12 @@ The 15 phases map naturally to the Bronze → Silver → Gold medallion architec
 
 [:material-book-open-variant: Deep dive on medallion architecture](reference/medallion-architecture.md)
 
+[:material-target: Real-world use cases by industry](reference/use-cases.md)
+
+[:material-road-variant: Planned features and roadmap](reference/feature-roadmap.md)
+
+[:material-robot: AI-assisted development guide](reference/ai-assisted-development.md)
+
 ---
 
 ## Quick Start

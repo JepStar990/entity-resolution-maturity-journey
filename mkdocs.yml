@@ -64,7 +64,7 @@ markdown_extensions:
 
 plugins:
   - search
-  - minify_html
+  - minify
   - redirects:
       redirect_maps:
         'phases/phase-01.md': 'phases/phase-01-basic-data-ingestion.md'
@@ -95,6 +95,9 @@ nav:
       - Phase 14 - Data Stewardship: phases/phase-14-data-stewardship.md
       - Phase 15 - MDM Distribution: phases/phase-15-master-data-management.md
   - Reference:
+      - Use Cases: reference/use-cases.md
+      - Feature Roadmap: reference/feature-roadmap.md
+      - AI-Assisted Development: reference/ai-assisted-development.md
       - Glossary: reference/glossary.md
       - Technology Stack: reference/tech-stack.md
       - Fabric Setup Guide: reference/fabric-setup.md
