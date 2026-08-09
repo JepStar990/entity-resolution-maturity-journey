@@ -98,6 +98,7 @@ nav:
       - Glossary: reference/glossary.md
       - Technology Stack: reference/tech-stack.md
       - Fabric Setup Guide: reference/fabric-setup.md
+      - Production Deployment: reference/production-deployment.md
       - Fabric vs Databricks: reference/fabric-vs-databricks.md
       - Medallion Architecture: reference/medallion-architecture.md
       - Bibliography: reference/bibliography.md
