@@ -1,0 +1,244 @@
+# Entity Resolution Maturity Journey - CI/CD Pipeline
+#
+# Runs on every push and pull request:
+# 1. Lint all Python code
+# 2. Syntax-check all modules
+# 3. Run integration tests with generated data
+# 4. Deploy docs to GitHub Pages (on main branch)
+
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      run_integration_tests:
+        description: 'Run full integration tests'
+        type: boolean
+        default: false
+
+env:
+  PYTHON_VERSION: '3.10'
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Lint & Syntax Check
+  # ---------------------------------------------------------------------------
+  lint:
+    name: Lint & Syntax Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          pip install pyspark>=3.5 delta-spark>=3.0 pyyaml flake8 pylint
+
+      - name: Syntax check all Python modules
+        run: |
+          echo "=== Syntax checking all Python files ==="
+          find examples/src -name "*.py" -exec python -m py_compile {} \; 2>&1
+          echo "=== Syntax check passed ==="
+
+      - name: Lint with flake8
+        run: |
+          flake8 examples/src/ --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 examples/src/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+      - name: Check for Claude/AI traces
+        run: |
+          echo "=== Checking for prohibited AI traces ==="
+          ! grep -r "Claude\|claude\|Anthropic\|anthropic\|Co-Authored-By\|noreply@anthropic" \
+            examples/ infra/ .github/ --include="*.py" --include="*.yaml" --include="*.yml" --include="*.json" --include="*.bicep" \
+            || (echo "ERROR: AI traces found in codebase" && exit 1)
+          echo "=== No prohibited traces found ==="
+
+  # ---------------------------------------------------------------------------
+  # Unit & Smoke Tests
+  # ---------------------------------------------------------------------------
+  test:
+    name: Unit & Smoke Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Set up Java (required for PySpark)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      - name: Install dependencies
+        run: |
+          pip install pyspark>=3.5 delta-spark>=3.0 pyyaml
+          pip install jellyfish scikit-learn pandas
+
+      - name: Run quick smoke test
+        run: |
+          python -c "
+          import sys
+          sys.path.insert(0, 'examples/src')
+
+          from pyspark.sql import SparkSession
+          spark = SparkSession.builder \
+              .appName('CI-Test') \
+              .master('local[2]') \
+              .config('spark.sql.extensions', 'io.delta.sql.DeltaSparkSessionExtension') \
+              .config('spark.sql.catalog.spark_catalog', 'org.apache.spark.sql.delta.catalog.DeltaCatalog') \
+              .config('spark.sql.warehouse.dir', '/tmp/spark-warehouse') \
+              .getOrCreate()
+
+          from engine.test_runner import run_quick_smoke_test
+          result = run_quick_smoke_test(spark)
+          assert result['success'], f'Smoke test failed: {result.get(\"error\")}'
+          print('Smoke test passed')
+          spark.stop()
+          "
+
+      - name: Verify configs load correctly
+        run: |
+          python -c "
+          import yaml
+          import glob
+          for config_file in glob.glob('examples/config/*.yaml'):
+              with open(config_file) as f:
+                  yaml.safe_load(f)
+              print(f'  {config_file}: valid')
+          print('All configs valid')
+          "
+
+      - name: Validate notebook JSON
+        run: |
+          python -c "
+          import json, glob
+          for nb_file in glob.glob('examples/notebooks/*.ipynb'):
+              with open(nb_file) as f:
+                  nb = json.load(f)
+              assert 'cells' in nb, f'{nb_file}: missing cells'
+              assert 'metadata' in nb, f'{nb_file}: missing metadata'
+              print(f'  {nb_file}: valid ({len(nb[\"cells\"])} cells)')
+          print('All notebooks valid')
+          "
+
+  # ---------------------------------------------------------------------------
+  # Integration Tests (on demand or main branch)
+  # ---------------------------------------------------------------------------
+  integration:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main' || github.event.inputs.run_integration_tests == 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      - name: Install dependencies
+        run: |
+          pip install pyspark>=3.5 delta-spark>=3.0 pyyaml
+          pip install jellyfish scikit-learn pandas
+
+      - name: Run full integration test
+        run: |
+          python -c "
+          import sys
+          sys.path.insert(0, 'examples/src')
+
+          from pyspark.sql import SparkSession
+          spark = SparkSession.builder \
+              .appName('CI-Integration') \
+              .master('local[4]') \
+              .config('spark.sql.extensions', 'io.delta.sql.DeltaSparkSessionExtension') \
+              .config('spark.sql.catalog.spark_catalog', 'org.apache.spark.sql.delta.catalog.DeltaCatalog') \
+              .config('spark.sql.warehouse.dir', '/tmp/spark-warehouse-integration') \
+              .getOrCreate()
+
+          from engine.test_runner import run_integration_test
+          result = run_integration_test(
+              spark,
+              entity_types=['customer', 'product'],
+              rows_per_type=200,
+              verbose=True,
+          )
+
+          print()
+          print('='*60)
+          if result['success']:
+              print('INTEGRATION TESTS PASSED')
+          else:
+              print('INTEGRATION TESTS FAILED')
+              for err in result['errors']:
+                  print(f'  - {err}')
+              sys.exit(1)
+          print('='*60)
+          spark.stop()
+          "
+
+  # ---------------------------------------------------------------------------
+  # Deploy Documentation (main branch only)
+  # ---------------------------------------------------------------------------
+  deploy-docs:
+    name: Deploy Documentation
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install docs dependencies
+        run: pip install -r requirements-docs.txt
+
+      - name: Build docs
+        run: mkdocs build --strict
+
+      - name: Deploy to GitHub Pages
+        run: mkdocs gh-deploy --force
+
+  # ---------------------------------------------------------------------------
+  # Fabric Provisioning Validation (PR check only)
+  # ---------------------------------------------------------------------------
+  validate-infra:
+    name: Validate Infrastructure
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate Bicep template
+        uses: azure/bicep-build-action@v1
+        with:
+          bicepFilePath: infra/main.bicep
+
+      - name: Validate provisioning script syntax
+        run: python -m py_compile infra/provision-fabric.py

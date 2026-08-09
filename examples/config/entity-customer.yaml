@@ -1,0 +1,92 @@
+# Entity-Specific Configuration: Customer
+#
+# Overrides and extensions to the master pipeline config for customer entities.
+
+entity:
+  type: customer
+  description: "Customer entity resolution configuration"
+  primary_key: id
+  display_name: "Customer"
+
+# Phase-specific overrides
+ingestion:
+  source_system: crm_salesforce
+
+schema_validation:
+  schema:
+    - name: id
+      type: string
+      nullable: false
+    - name: first_name
+      type: string
+      nullable: true
+    - name: last_name
+      type: string
+      nullable: true
+    - name: email
+      type: string
+      nullable: true
+    - name: phone
+      type: string
+      nullable: true
+    - name: address
+      type: string
+      nullable: true
+    - name: city
+      type: string
+      nullable: true
+    - name: state
+      type: string
+      nullable: true
+    - name: postal_code
+      type: string
+      nullable: true
+    - name: country
+      type: string
+      nullable: true
+    - name: created_date
+      type: date
+      nullable: true
+    - name: updated_at
+      type: timestamp
+      nullable: true
+
+standardization:
+  entity_type: customer
+  name_columns: [first_name, last_name]
+  phone_column: phone
+  email_column: email
+  address_columns:
+    street: address
+    city: city
+    state: state
+    zip: postal_code
+    country: country
+
+matching:
+  exact_dedup_keys: [email, phone]
+  fuzzy_match_columns: [full_name_std, email_std, phone_std]
+  fuzzy_threshold: 0.85
+  block_columns: [address_state, address_zip5]
+  block_strategy: sorted_neighborhood
+
+survivorship:
+  rules:
+    - attribute: first_name
+      strategy: longest
+    - attribute: last_name
+      strategy: longest
+    - attribute: email
+      strategy: most_recent
+    - attribute: phone
+      strategy: most_recent
+    - attribute: address
+      strategy: most_complete
+    - attribute: city
+      strategy: most_frequent
+    - attribute: state
+      strategy: most_frequent
+    - attribute: postal_code
+      strategy: most_frequent
+    - attribute: country
+      strategy: most_frequent

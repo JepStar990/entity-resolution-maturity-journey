@@ -1,0 +1,51 @@
+# Fabric Development Environment Configuration
+#
+# Overrides the master pipeline config for the local/Fabric development
+# workspace. Uses smaller window sizes, fewer partitions, and lower
+# thresholds for faster iteration.
+
+environment: development
+fabric_workspace: entity-resolution-dev
+fabric_lakehouse: er_lakehouse_dev
+spark_runtime: "Fabric Runtime 1.3"
+log_level: DEBUG
+
+ingestion:
+  sources:
+    - type: csv
+      path: Files/raw/customers/
+      table_name: customer_raw
+      options:
+        header: "true"
+        delimiter: ","
+        inferSchema: "true"
+
+record_blocking:
+  sorted_neighborhood:
+    customer:
+      window_size: 20
+    company:
+      window_size: 50
+
+fuzzy_matching:
+  similarity_threshold: 0.80  # Lower threshold for dev testing
+
+probabilistic_matching:
+  model_type: logistic_regression  # Faster training in dev
+  test_ratio: 0.3
+
+llm_semantic:
+  low_confidence_threshold: 0.2
+  high_confidence_threshold: 0.8
+  llm_model: gpt-4o-mini  # Cheaper model for dev
+
+embedding_matching:
+  model_name: all-MiniLM-L6-v2
+  top_k: 5
+
+stewardship:
+  max_queue_size: 100
+
+mdm_distribution:
+  export_formats: [delta]
+  api_port: 8001

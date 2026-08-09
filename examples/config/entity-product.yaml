@@ -1,0 +1,66 @@
+# Entity-Specific Configuration: Product
+#
+# Overrides and extensions to the master pipeline config for product entities.
+
+entity:
+  type: product
+  description: "Product entity resolution configuration"
+  primary_key: id
+  display_name: "Product"
+
+schema_validation:
+  schema:
+    - name: id
+      type: string
+      nullable: false
+    - name: product_name
+      type: string
+      nullable: false
+    - name: sku
+      type: string
+      nullable: true
+    - name: manufacturer
+      type: string
+      nullable: true
+    - name: category
+      type: string
+      nullable: true
+    - name: subcategory
+      type: string
+      nullable: true
+    - name: price
+      type: double
+      nullable: true
+    - name: cost
+      type: double
+      nullable: true
+    - name: created_date
+      type: date
+      nullable: true
+    - name: updated_at
+      type: timestamp
+      nullable: true
+
+standardization:
+  entity_type: product
+  name_columns: [product_name]
+  sku_column: sku
+
+matching:
+  exact_dedup_keys: [sku, manufacturer]
+  fuzzy_match_columns: [product_name_std, sku_std]
+  fuzzy_threshold: 0.90
+  block_strategy: standard
+
+survivorship:
+  rules:
+    - attribute: product_name
+      strategy: longest
+    - attribute: sku
+      strategy: most_recent
+    - attribute: manufacturer
+      strategy: most_frequent
+    - attribute: category
+      strategy: most_frequent
+    - attribute: price
+      strategy: most_recent
