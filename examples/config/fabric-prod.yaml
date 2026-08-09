@@ -1,0 +1,56 @@
+# Fabric Production Environment Configuration
+#
+# Production settings optimized for throughput, accuracy, and cost
+# efficiency. Uses larger window sizes, XGBoost, and full export
+# formats.
+
+environment: production
+fabric_workspace: entity-resolution-prod
+fabric_lakehouse: er_lakehouse_prod
+spark_runtime: "Fabric Runtime 1.3"
+log_level: INFO
+spark_config:
+  spark.sql.shuffle.partitions: 400
+  spark.sql.adaptive.enabled: true
+  spark.sql.adaptive.coalescePartitions.enabled: true
+  spark.executor.memory: 8g
+  spark.driver.memory: 4g
+
+record_blocking:
+  sorted_neighborhood:
+    customer:
+      window_size: 200
+    company:
+      window_size: 500
+
+fuzzy_matching:
+  similarity_threshold: 0.85
+
+probabilistic_matching:
+  model_type: xgboost
+  test_ratio: 0.2
+  match_threshold: 0.5
+  xgboost_params:
+    maxDepth: 8
+    eta: 0.05
+    nEstimators: 200
+    subsample: 0.8
+    colsampleBytree: 0.8
+    objective: "binary:logistic"
+
+llm_semantic:
+  low_confidence_threshold: 0.3
+  high_confidence_threshold: 0.7
+  llm_model: gpt-4o
+
+embedding_matching:
+  model_name: all-MiniLM-L6-v2
+  top_k: 10
+  distance_threshold: 0.3
+
+stewardship:
+  max_queue_size: 1000
+
+mdm_distribution:
+  export_formats: [delta, parquet, csv]
+  api_port: 8000

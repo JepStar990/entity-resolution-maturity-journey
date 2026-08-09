@@ -1,0 +1,86 @@
+# Entity-Specific Configuration: Company
+#
+# Overrides and extensions to the master pipeline config for company entities.
+
+entity:
+  type: company
+  description: "Company/organization entity resolution configuration"
+  primary_key: id
+  display_name: "Company"
+
+schema_validation:
+  schema:
+    - name: id
+      type: string
+      nullable: false
+    - name: company_name
+      type: string
+      nullable: false
+    - name: ticker
+      type: string
+      nullable: true
+    - name: duns_number
+      type: string
+      nullable: true
+    - name: sic_code
+      type: string
+      nullable: true
+    - name: naics_code
+      type: string
+      nullable: true
+    - name: address
+      type: string
+      nullable: true
+    - name: city
+      type: string
+      nullable: true
+    - name: state
+      type: string
+      nullable: true
+    - name: postal_code
+      type: string
+      nullable: true
+    - name: country
+      type: string
+      nullable: true
+    - name: website
+      type: string
+      nullable: true
+    - name: created_date
+      type: date
+      nullable: true
+    - name: updated_at
+      type: timestamp
+      nullable: true
+
+standardization:
+  entity_type: company
+  name_columns: [company_name]
+  ticker_column: ticker
+
+matching:
+  exact_dedup_keys: [duns_number, ticker]
+  fuzzy_match_columns: [company_name_std, address_street, address_zip5]
+  fuzzy_threshold: 0.90
+  block_strategy: sorted_neighborhood
+
+survivorship:
+  rules:
+    - attribute: company_name
+      strategy: longest
+    - attribute: ticker
+      strategy: most_recent
+    - attribute: duns_number
+      strategy: most_recent
+    - attribute: sic_code
+      strategy: most_frequent
+    - attribute: website
+      strategy: most_recent
+    - attribute: address
+      strategy: most_complete
+    - attribute: city
+      strategy: most_frequent
+    - attribute: state
+      strategy: most_frequent
+    - attribute: country
+      strategy: most_frequent

@@ -1,0 +1,319 @@
+# Entity Resolution Maturity Journey - Master Pipeline Configuration
+#
+# This file defines the complete pipeline configuration for all 15 phases.
+# Override per-environment in fabric-dev.yaml or fabric-prod.yaml.
+
+pipeline:
+  name: entity-resolution-maturity-journey
+  version: "1.0.0"
+  description: "15-phase entity resolution pipeline from ingestion to MDM distribution"
+
+# ---------------------------------------------------------------------------
+# Environment
+# ---------------------------------------------------------------------------
+environment:
+  fabric_workspace: entity-resolution-prod
+  fabric_lakehouse: er_lakehouse
+  spark_runtime: "Fabric Runtime 1.3"
+  log_level: INFO
+
+# ---------------------------------------------------------------------------
+# Medallion paths (OneLake for Fabric, local for dev)
+# ---------------------------------------------------------------------------
+medallion:
+  bronze_path: Tables/bronze/
+  silver_path: Tables/silver/
+  gold_path: Tables/gold/
+  metrics_path: Tables/metrics/
+  audit_path: Tables/audit/
+
+# ---------------------------------------------------------------------------
+# Phase 1: Ingestion Sources
+# ---------------------------------------------------------------------------
+ingestion:
+  sources:
+    - type: csv
+      path: Files/raw/customers/
+      table_name: customer_raw
+      options:
+        header: "true"
+        delimiter: ","
+        inferSchema: "true"
+    - type: parquet
+      path: Files/raw/products/
+      table_name: product_raw
+    - type: json
+      path: Files/raw/suppliers/
+      table_name: supplier_raw
+      options:
+        multiline: "false"
+    - type: jdbc
+      url: "jdbc:sqlserver://sqlserver.database.windows.net:1433;database=erp"
+      table: dbo.customers
+      table_name: customer_erp
+      options:
+        driver: com.microsoft.sqlserver.jdbc.SQLServerDriver
+        numPartitions: "8"
+
+# ---------------------------------------------------------------------------
+# Phase 2: Schema Validation
+# ---------------------------------------------------------------------------
+schema_validation:
+  schemas:
+    customer:
+      - name: id
+        type: string
+        nullable: false
+      - name: name
+        type: string
+        nullable: false
+      - name: email
+        type: string
+        nullable: true
+      - name: phone
+        type: string
+        nullable: true
+      - name: created_date
+        type: date
+        nullable: true
+    product:
+      - name: id
+        type: string
+        nullable: false
+      - name: product_name
+        type: string
+        nullable: false
+      - name: sku
+        type: string
+        nullable: true
+      - name: price
+        type: double
+        nullable: true
+
+# ---------------------------------------------------------------------------
+# Phase 3: Data Quality Rules
+# ---------------------------------------------------------------------------
+data_quality:
+  gateway_threshold: 1.0  # Must pass all error-severity rules
+  rules:
+    customer:
+      - name: id_not_null
+        category: completeness
+        severity: error
+      - name: email_valid
+        category: validity
+        severity: warning
+        condition: "email rlike '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\\\.[A-Za-z]{2,}$'"
+      - name: name_min_length
+        category: validity
+        severity: warning
+        condition: "length(name) >= 2"
+
+# ---------------------------------------------------------------------------
+# Phase 4: Standardization
+# ---------------------------------------------------------------------------
+standardization:
+  entity_configs:
+    customer:
+      name_columns: [first_name, last_name]
+      phone_column: phone
+      email_column: email
+      address_columns:
+        street: address
+        city: city
+        state: state
+        zip: postal_code
+        country: country
+    company:
+      name_column: company_name
+      ticker_column: ticker
+    product:
+      name_column: product_name
+      sku_column: sku
+
+# ---------------------------------------------------------------------------
+# Phase 5: Enrichment
+# ---------------------------------------------------------------------------
+enrichment:
+  postal_ref_path: Tables/reference/postal_codes/
+  industry_ref_path: Tables/reference/industry_codes/
+  reference_tables:
+    - path: Tables/reference/firmographics/
+      join_key: company_id
+      ref_join_key: duns_number
+      select_columns: [duns_number, revenue, employee_count, industry_segment]
+      join_type: left
+
+# ---------------------------------------------------------------------------
+# Phase 6: Exact Deduplication
+# ---------------------------------------------------------------------------
+exact_dedup:
+  keep_strategy: best_quality
+  quality_col: _quality_score
+  key_sets:
+    customer:
+      - [tax_id, email]
+      - [full_name_std, phone_std]
+      - [full_name_std, address_zip5]
+    product:
+      - [sku]
+      - [product_name_std, manufacturer]
+
+# ---------------------------------------------------------------------------
+# Phase 7: Fuzzy Matching
+# ---------------------------------------------------------------------------
+fuzzy_matching:
+  similarity_threshold: 0.85
+  match_columns:
+    customer: [full_name_std, email_std, phone_std]
+    company: [company_name_std, address_street, address_zip5]
+    product: [product_name_std, sku_std]
+  column_weights:
+    customer:
+      full_name_std: 0.4
+      email_std: 0.35
+      phone_std: 0.25
+    company:
+      company_name_std: 0.5
+      address_street: 0.3
+      address_zip5: 0.2
+
+# ---------------------------------------------------------------------------
+# Phase 8: Record Blocking
+# ---------------------------------------------------------------------------
+record_blocking:
+  strategy: sorted_neighborhood
+  sorted_neighborhood:
+    customer:
+      sort_key: full_name_std
+      window_size: 100
+    company:
+      sort_key: company_name_std
+      window_size: 200
+  standard_blocking:
+    customer:
+      block_columns: [address_zip5, address_state]
+    company:
+      block_columns: [address_state, sic_code]
+
+# ---------------------------------------------------------------------------
+# Phase 9: Feature Engineering
+# ---------------------------------------------------------------------------
+feature_engineering:
+  features:
+    customer:
+      - type: string
+        left_col: full_name_std
+        right_col: full_name_std
+        prefix: name_
+      - type: string
+        left_col: email_std
+        right_col: email_std
+        prefix: email_
+      - type: categorical
+        left_col: address_state
+        right_col: address_state
+        prefix: state_
+      - type: categorical
+        left_col: address_zip5
+        right_col: address_zip5
+        prefix: zip_
+      - type: date
+        left_col: created_date
+        right_col: created_date
+        prefix: created_
+
+# ---------------------------------------------------------------------------
+# Phase 10: Probabilistic Matching
+# ---------------------------------------------------------------------------
+probabilistic_matching:
+  model_type: xgboost
+  test_ratio: 0.2
+  match_threshold: 0.5
+  xgboost_params:
+    maxDepth: 6
+    eta: 0.1
+    nEstimators: 100
+    subsample: 0.8
+    colsampleBytree: 0.8
+    objective: "binary:logistic"
+
+# ---------------------------------------------------------------------------
+# Phase 11: LLM Semantic Matching
+# ---------------------------------------------------------------------------
+llm_semantic:
+  low_confidence_threshold: 0.3
+  high_confidence_threshold: 0.7
+  llm_model: gpt-4o
+  entity_fields: [full_name_std, email_std, phone_std, address_street]
+
+# ---------------------------------------------------------------------------
+# Phase 12: Embedding Matching
+# ---------------------------------------------------------------------------
+embedding_matching:
+  model_name: all-MiniLM-L6-v2
+  faiss_index_type: IVFFlat
+  top_k: 10
+  distance_threshold: 0.5
+  text_columns:
+    customer: [full_name_std, email_std, address_street]
+    company: [company_name_std, address_street]
+    product: [product_name_std, sku_std]
+
+# ---------------------------------------------------------------------------
+# Phase 13: Golden Record Creation
+# ---------------------------------------------------------------------------
+golden_record:
+  survivorship_rules:
+    customer:
+      - attribute: full_name_std
+        strategy: longest
+      - attribute: email_std
+        strategy: most_recent
+      - attribute: phone_std
+        strategy: most_recent
+      - attribute: address_street
+        strategy: longest
+      - attribute: address_city
+        strategy: most_frequent
+      - attribute: address_state
+        strategy: most_frequent
+      - attribute: address_zip5
+        strategy: most_frequent
+    company:
+      - attribute: company_name_std
+        strategy: longest
+      - attribute: ticker_std
+        strategy: most_recent
+  source_priorities:
+    - salesforce
+    - erp
+    - legacy_crm
+    - manual_entry
+
+# ---------------------------------------------------------------------------
+# Phase 14: Data Stewardship
+# ---------------------------------------------------------------------------
+stewardship:
+  max_queue_size: 500
+  auto_approve_threshold: 0.95
+  auto_reject_threshold: 0.05
+  priority_rules:
+    - condition: "entity_type == 'customer' AND annual_revenue > 1000000"
+      boost: 0.2
+    - condition: "entity_type == 'supplier'"
+      boost: 0.1
+
+# ---------------------------------------------------------------------------
+# Phase 15: MDM Distribution
+# ---------------------------------------------------------------------------
+mdm_distribution:
+  export_formats: [delta, parquet]
+  export_partitions: [country]
+  api_enabled: true
+  event_stream_enabled: true
+  api_host: "0.0.0.0"
+  api_port: 8000
+  consumer_paths:
+    delta: Tables/gold/customer_mdm_export
+    parquet: Files/exports/customer_mdm/
