@@ -1,7 +1,7 @@
 site_name: Entity Resolution Maturity Journey
 site_description: >
   A 15-phase documented maturity model for building entity resolution
-  and master data management pipelines with Python and PySpark.
+  and master data management pipelines with Python, PySpark, and Microsoft Fabric.
 site_url: https://JepStar990.github.io/entity-resolution-maturity-journey/
 repo_url: https://github.com/JepStar990/entity-resolution-maturity-journey
 repo_name: JepStar990/entity-resolution-maturity-journey
@@ -97,6 +97,8 @@ nav:
   - Reference:
       - Glossary: reference/glossary.md
       - Technology Stack: reference/tech-stack.md
+      - Fabric Setup Guide: reference/fabric-setup.md
+      - Fabric vs Databricks: reference/fabric-vs-databricks.md
       - Medallion Architecture: reference/medallion-architecture.md
       - Bibliography: reference/bibliography.md
       - Decision Log: reference/decision-log.md

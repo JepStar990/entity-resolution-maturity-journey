@@ -291,7 +291,7 @@ Move to Phase 14 when:
 ## Further Reading
 
 - [Survivorship in Master Data Management](https://towardsdatascience.com/survivorship-rules-in-mdm/)
-- [Delta Lake Time Travel](https://delta.io/blog/2023-01-18-delta-lake-time-travel/)
+- [Delta Lake Time Travel](https://delta.io/blog/2023-01-18-delta-lake-time-travel/) — also available natively in [Fabric Delta Lake](https://learn.microsoft.com/en-us/fabric/data-engineering/delta-lake-table-maintenance)
 - [Conflict Resolution Strategies for Data Integration](https://dl.acm.org/doi/10.1145/1242572.1242582)
 
 ---

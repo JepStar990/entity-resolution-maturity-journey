@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Documentation](https://img.shields.io/badge/docs-mkdocs-brightgreen.svg)](https://jepstar990.github.io/entity-resolution-maturity-journey/)
 
-A documented 15-phase maturity model for building enterprise-grade entity resolution and master data management pipelines on **Python + PySpark**.
+A documented 15-phase maturity model for building enterprise-grade entity resolution and master data management pipelines on **Python + PySpark + Microsoft Fabric**.
 
 ```mermaid
 flowchart LR

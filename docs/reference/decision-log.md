@@ -206,3 +206,35 @@ Use MkDocs with the Material for MkDocs theme.
 
 - Limited to Markdown (no MDX/React components). This is acceptable for documentation-focused content.
 - Material theme is free for open-source but requires a license for commercial internal use.
+
+---
+
+## ADR-008: Microsoft Fabric as Primary Platform
+
+**Status**: Accepted
+**Date**: 2026-08-09
+
+### Context
+
+The entity resolution maturity model was initially designed platform-agnostically with a Databricks-leaning reference stack. For production implementation, a specific platform must be selected. Options: Databricks, Microsoft Fabric, AWS EMR, or self-managed Spark on Kubernetes.
+
+### Decision
+
+Use Microsoft Fabric as the primary reference platform for production implementations.
+
+### Rationale
+
+- **Unified SaaS platform**: All workloads (Data Factory, Data Engineering, Data Science, Real-Time Intelligence, Power BI) operate on a single capacity pool with OneLake as the unified storage layer — no stitching together separate services.
+- **Native Delta Lake**: Delta is Fabric's native table format. All ACID transactions, time travel, schema enforcement, and merges work without additional JARs or configuration.
+- **Built-in MLflow**: Fabric natively supports MLflow for experiment tracking and model registry — no separate infrastructure to provision or maintain.
+- **OneLake shortcuts**: Delta tables can be shared across workspaces without data duplication, enabling a clean medallion architecture where Bronze/Silver/Gold layers in separate workspaces reference the same physical data.
+- **Cost predictability**: Capacity-based pricing (F-SKUs) with the ability to pause when idle provides predictable costs for development and production.
+- **Power BI integration**: Matching results, quality dashboards, and stewardship metrics are natively accessible in Power BI via Direct Lake mode without data movement.
+- **Managed Spark runtime**: Fabric Runtime provides pre-configured PySpark environments with library management, reducing operational overhead compared to self-managed clusters.
+
+### Consequences
+
+- Platform lock-in to the Microsoft ecosystem (Azure, OneLake, Fabric SKUs).
+- Fabric Spark features may lag behind the latest open-source Apache Spark releases.
+- Some open-source libraries (e.g., certain FAISS GPU configurations) may require additional setup within Fabric's managed environment.
+- Teams already invested in the Databricks ecosystem may prefer to stay; the maturity model concepts remain applicable to both platforms.

@@ -22,6 +22,29 @@ This guide covers prerequisites, setup, and recommended reading paths for differ
 | Delta Lake | 3.x | Storage layer |
 | Great Expectations | 1.x | Data quality framework |
 
+### Microsoft Fabric Prerequisites
+
+For running the pipeline on Microsoft Fabric:
+
+1. **Fabric capacity** — An F2 or higher capacity SKU (F2 is sufficient for development; F8+ recommended for production workloads).
+2. **Workspace** — Create a Fabric workspace in the Azure portal.
+3. **Lakehouse** — Provision a Lakehouse within the workspace. This creates the OneLake storage backend and a managed Spark runtime.
+4. **Fabric Runtime** — Fabric Runtime 1.3 (Spark 3.5) is the recommended version matching this guide.
+5. **Notebooks** — Import phase notebooks into the Fabric workspace. Fabric notebooks support `%%configure` magic for Spark session settings.
+6. **Environment** — Optionally create a Fabric Environment to pin library versions (Great Expectations, XGBoost, FAISS, etc.) across notebooks.
+
+```bash
+# For local development (single-node PySpark):
+pip install pyspark>=3.5 delta-spark>=3.0
+
+# For Fabric deployment:
+# 1. Upload notebooks to Fabric workspace
+# 2. Attach notebooks to your Lakehouse
+# 3. Configure Spark session via %%configure magic:
+#    %%configure
+#    { "default Lakehouse": { "name": "your-lakehouse" } }
+```
+
 ### Local Setup
 
 ```bash

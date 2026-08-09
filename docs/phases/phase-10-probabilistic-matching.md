@@ -174,7 +174,7 @@ df_results = predictions \
 |-----------|-------------|
 | **Match Probabilities** | 0.0–1.0 per candidate pair |
 | **Decision Tiers** | ≥ 95% auto-merge, 80–95% review, < 80% reject |
-| **Model Artifacts** | Registered in MLflow (model + metrics + parameters) |
+| **Model Artifacts** | Registered in MLflow (model + metrics + parameters). On Fabric, the ML Model registry is built-in — no separate server to manage. |
 
 ---
 
@@ -185,7 +185,7 @@ df_results = predictions \
 | **PySpark MLlib** | Distributed ML training | Native Spark integration, scales to large datasets |
 | **XGBoost (xgboost4j-spark)** | Gradient boosting | State-of-the-art tabular performance |
 | **scikit-learn** (alternative) | Single-node training | Better for small labeled datasets (< 100K pairs) |
-| **MLflow** | Model registry | Track experiments, version models, manage deployment |
+| **MLflow** (built into Fabric) | Model registry | Track experiments, version models, manage deployment |
 | **imbalanced-learn** | Class balancing | SMOTE, random undersampling for imbalanced classes |
 
 ---
@@ -221,7 +221,7 @@ df_results = predictions \
 Move to Phase 11 when:
 
 - [ ] An ML model outperforms threshold-based fuzzy matching on held-out test data.
-- [ ] The model is registered in MLflow with versioned artifacts.
+- [ ] The model is registered in MLflow (Fabric ML Model registry) with versioned artifacts.
 - [ ] Decision tiers are calibrated and agreed upon with business stakeholders.
 - [ ] The model handles class imbalance (duplicates are typically < 5% of all pairs).
 - [ ] There is a process for periodic retraining as new labeled data arrives.
@@ -261,7 +261,7 @@ Move to Phase 11 when:
 - [Fellegi-Sunter Model for Record Linkage](https://www.jstor.org/stable/2286061) (the foundational paper)
 - [XGBoost for Entity Resolution](https://xgboost.readthedocs.io/)
 - [Calibrating Classifier Probabilities](https://scikit-learn.org/stable/modules/calibration.html)
-- [MLflow Model Registry](https://mlflow.org/docs/latest/model-registry.html)
+- [MLflow Model Registry](https://mlflow.org/docs/latest/model-registry.html) — also see [Fabric ML Model Documentation](https://learn.microsoft.com/en-us/fabric/data-science/ml-model-overview)
 
 ---
 
