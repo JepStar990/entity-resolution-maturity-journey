@@ -13,7 +13,7 @@ pipeline:
 # ---------------------------------------------------------------------------
 environment:
   fabric_workspace: entity-resolution-prod
-  fabric_lakehouse: er_lakehouse
+  fabric_lakehouse: er_bronze
   spark_runtime: "Fabric Runtime 1.3"
   log_level: INFO
 
@@ -33,12 +33,13 @@ medallion:
 ingestion:
   sources:
     - type: csv
-      path: Files/raw/customers/
+      path: Files/customer_raw/
       table_name: customer_raw
       options:
         header: "true"
         delimiter: ","
         inferSchema: "true"
+        recursiveFileLookup: "true"
     - type: parquet
       path: Files/raw/products/
       table_name: product_raw
